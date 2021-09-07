@@ -1,0 +1,70 @@
+{% include 'navbar.html' %}
+<body>
+    <h1 style="text-align: center;">{{ title }} </h1>
+    <div class="container">
+        <!-- <div class="boxInitial">
+            <ul class="listField">
+                <li><span>x1:</span> <input type="text" class="text_field"></li>
+                <li><span>x2:</span> <input type="text" class="text_field"></li>
+                <li><span>y1:</span>  <input type="text" class="text_field"></li>
+                <li><span>y2:</span>  <input type="text" class="text_field"></li>
+            </ul>
+        </div> -->
+        <div class="boxImageInitial">
+            <div id="imageTest"></div>
+            <div class="boxButton">
+                <input type="file" id="file" style="display:none;">
+                <button id="button_upload"  class="uploadButton">Subir Imagen</button>
+                
+            </div>
+        </div>
+
+        <div class="boxCut">
+            <i class="fas fa-chevron-right" id="buttonChange"></i>
+        </div>
+
+        <div class="boxImageResult">
+            <img src="/static/image/mario.jpg" class="imageInitial" alt="">
+            <div class="boxButton">
+                <button class="uploadButton">Subir Imagen</button>
+            </div>
+        </div>
+    </div>
+    <script>
+        $(function(){
+            $('#imageTest').append(`
+            <img src="/static/image/mario.jpg" class="imageInitial" id="convertFile" alt="">
+            `)
+            $('#button_upload').click(function(){
+                file.click()
+            })
+            $('#file').change(function(e){
+                var image = document.getElementById('convertFile');
+                var files = e.target.files[0]
+                console.log(files)
+                image.src = "https://kinsta.com/es/wp-content/uploads/sites/8/2019/09/jpg-vs-jpeg-1024x512.jpg"
+                image.onload = function() {
+                    URL.revokeObjectURL(image.src) // free memory
+                }       
+            })
+
+            $('#buttonChange').on('click',function(e){
+                e.preventDefault();
+                console.log("button change")
+                $.ajax({
+                    url:"{% url 'prueba' %}",
+                    type:"GET",
+                    data:{
+                        'nombre':'jose',
+                        'csrfmiddlewaretoken': '{{ csrf_token }}',
+                    },
+                    dataType:"JSON"
+                }).done(response => {
+                    console.log(response)
+                })
+            })
+
+        })
+    </script>
+</body>
+</html>
