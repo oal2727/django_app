@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Upload
+from .models import Upload,OperatorEdge
 # Register your models here.
 # admin.site.register(Upload)
 # @admin.register()
@@ -13,6 +13,8 @@ class UploadAdminSettings(admin.ModelAdmin):
 
 
 admin.site.register(Upload,UploadAdminSettings)
+admin.site.register(OperatorEdge)
+
 
 
 

@@ -38,7 +38,10 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'app'
+    'app',
+    'django_static_fontawesome',
+    'django_static_jquery3',
+    'django_admin_global_sidebar',
 ]
 
 MIDDLEWARE = [
@@ -49,6 +52,47 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+]
+
+DJANGO_ADMIN_GLOBAL_SIDEBAR_MENUS = [
+    {
+        "title": "Home",
+        "icon": "fa fa-home",
+        "url": "/admin/",
+    },{
+        "title": "Manage Books",
+        "icon": "fa fa-book",
+        "children": [
+            {
+                "title": "Manage Categories",
+                "icon": "fas fa-list",
+                "model": "django_admin_global_sidebar_example.category",
+                "permissions": ["django_admin_global_sidebar_example.view_category"],
+            },{
+                "title": "Manage Books",
+                "icon": "fas fa-book",
+                "model": "django_admin_global_sidebar_example.book",
+                "permissions": ["django_admin_global_sidebar_example.view_book"],
+            }
+        ]   
+    },{
+        "title": "Authenticate",
+        "icon": "fa fa-cogs",
+        "children": [
+            {
+                "title": "Manage Users",
+                "icon": "fas fa-user",
+                "model": "auth.user",
+                "permissions": ["auth.view_user",],
+            },
+            {
+                "title": "Manage Groups",
+                "icon": "fas fa-users",
+                "model": "auth.group",
+                "permissions": ["auth.view_group",],
+            }
+        ]
+    },
 ]
 
 ROOT_URLCONF = 'manager.urls'

@@ -1,5 +1,6 @@
 from django.db import models
 from .utils import get_filtered_image
+from .utilsOperador import filterImageEdge
 from PIL import Image
 import numpy as np
 from io import BytesIO
@@ -19,6 +20,13 @@ ACTION_CHOICES=(
     ('OPERADOR_REDUCCION_GRISES','operador_reduccion_grises')
 )
 
+ACTION_CHOICES_OPERADOR=(
+    ('OPERADOR_ROBERTS','operador_roberts'),
+    ('OPERADOR_PREWITT','operador_prewitt'),
+    ('OPERADOR_SOBEL','operador_sobel'),
+    ('OPERADOR_CANNY','operador_canny'),
+)
+
 class Upload(models.Model):
     image = models.ImageField(upload_to="image")
     start_date = models.DateTimeField(default=datetime.datetime.now())
@@ -34,11 +42,44 @@ class Upload(models.Model):
     def save(self,*args,**kwargs):
         #open image
         pil_img = Image.open(self.image).convert("L")
-        img = get_filtered_image(pil_img,self.action)
+        #convert the image to array
+        cv_img = np.array(pil_img)
+        img = get_filtered_image(cv_img,self.action)
         #save
         buffer = BytesIO()
         img.save(buffer,format='png')
         image_png = buffer.getvalue()
         self.image.save(str(self.image),ContentFile(image_png),save=False)
 
+        super().save(*args,**kwargs)
+
+
+
+class OperatorEdge(models.Model):
+    imageoperator = models.ImageField(upload_to="edge")
+    start_date = models.DateTimeField(default=datetime.datetime.now())
+    action = models.CharField(max_length=255,
+    choices=ACTION_CHOICES_OPERADOR,
+    default='OPERADOR_ROBERTS')
+
+    def __str__(self):
+        return self.action
+    
+    def save(self,*args,**kwargs):
+        #open image
+        pil_img = Image.open(self.imageoperator)
+        
+        cv_img = np.array(pil_img)
+        img = filterImageEdge(cv_img,self.action)
+        
+        #convert back to pil image
+        im_pill = Image.fromarray(img)
+
+        #save
+        buffer = BytesIO()
+        im_pill.save(buffer,format='png')
+        image_png = buffer.getvalue()
+
+        self.imageoperator.save(str(self.imageoperator),ContentFile(image_png),save=False)
+        # -------
         super().save(*args,**kwargs)
